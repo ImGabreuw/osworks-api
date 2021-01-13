@@ -1,13 +1,13 @@
-package com.algaworks.osworks;
+package com.algaworks.osworks.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OsworksApiApplication {
+public class MainApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OsworksApiApplication.class, args);
+		SpringApplication.run(MainApplication.class, args);
 	}
 
 }
