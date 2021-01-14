@@ -3,6 +3,10 @@ package com.algaworks.osworks.api.exception_handler;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL) // Adicionar campos que não estam nulos no corpo do response
 public class Problema {
 	
 	private Integer status;
