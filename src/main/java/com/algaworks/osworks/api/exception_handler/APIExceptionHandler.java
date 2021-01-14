@@ -4,10 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -17,6 +21,9 @@ import com.algaworks.osworks.api.exception_handler.Problema.Campo;
 
 @ControllerAdvice
 public class APIExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	@Autowired
+	private MessageSource message;
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -28,12 +35,7 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		List<Campo> campos = ex.getBindingResult().getAllErrors()
 			.stream()
-			.map(error -> {
-				return new Problema.Campo(
-						((FieldError) error).getField(), 
-						error.getDefaultMessage()
-				);
-			})
+			.map(error -> toCampo(error, message))
 			.collect(Collectors.toList());
 	
 	
@@ -45,6 +47,13 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 		problema.setCampos(campos);
 		
 		return super.handleExceptionInternal(ex, problema, headers, status, request);
+	}
+	
+	private Campo toCampo(ObjectError error, MessageSource message) {
+		return new Problema.Campo(
+				((FieldError) error).getField(),
+				message.getMessage(error, LocaleContextHolder.getLocale())
+		);
 	}
 	
 }
