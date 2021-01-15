@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.algaworks.osworks.api.model.Comentario;
+import com.algaworks.osworks.domain.exception.DomainException;
 import com.algaworks.osworks.domain.model.enums.StatusOrdemServico;
 
 @Entity
@@ -128,6 +129,23 @@ public class OrdemServico {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	public boolean podeSerFinalizada() {
+		return getStatus().equals(StatusOrdemServico.ABERTA);
+	}
+	
+	public boolean naoPodeSerFinalizada() {
+		return !getStatus().equals(StatusOrdemServico.ABERTA);
+	}
+	
+	public void finalizar() {
+		if (naoPodeSerFinalizada()) {
+			throw new DomainException("Ordem de serviço não pode ser finalizada.");
+		}
+		
+		setStatus(StatusOrdemServico.FINALIZADA);
+		setDataFinalizacao(OffsetDateTime.now());
 	}
 
 	
