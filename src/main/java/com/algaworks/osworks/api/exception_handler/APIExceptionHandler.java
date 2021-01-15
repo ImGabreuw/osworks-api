@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.algaworks.osworks.api.exception_handler.Problema.Campo;
 import com.algaworks.osworks.domain.exception.DomainException;
+import com.algaworks.osworks.domain.exception.EntitadeNaoEncontradaException;
 
 @ControllerAdvice
 public class APIExceptionHandler extends ResponseEntityExceptionHandler {
@@ -30,6 +31,18 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(DomainException.class)
 	public ResponseEntity<Object> handleDomain(DomainException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
+		Problema problema = new Problema();
+		
+		problema.setStatus(status.value());
+		problema.setTitulo(ex.getMessage());
+		problema.setDataHora(OffsetDateTime.now());
+		
+		return super.handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+	}
+	
+	@ExceptionHandler(EntitadeNaoEncontradaException.class)
+	public ResponseEntity<Object> handleDomain(EntitadeNaoEncontradaException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.NOT_FOUND;
 		Problema problema = new Problema();
 		
 		problema.setStatus(status.value());
