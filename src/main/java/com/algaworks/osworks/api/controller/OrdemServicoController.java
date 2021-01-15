@@ -1,12 +1,15 @@
 package com.algaworks.osworks.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,20 @@ public class OrdemServicoController {
 	@GetMapping
 	public List<OrdemServico> listar() {
 		return repository.findAll();
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<OrdemServico> buscar(@PathVariable Long id) {
+		Optional<OrdemServico> ordemServicoOptional = repository.findById(id);
+		
+		if (ordemServicoOptional.isPresent()) {
+			return ResponseEntity
+					.ok(ordemServicoOptional.get());
+		}
+		
+		return ResponseEntity
+				.notFound()
+				.build();
 	}
 	
 }
