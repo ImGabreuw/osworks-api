@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.osworks.api.model.OrdemServicoDTO;
+import com.algaworks.osworks.api.model.OrdemServicoInputDTO;
 import com.algaworks.osworks.domain.model.OrdemServico;
 import com.algaworks.osworks.domain.repository.OrdemServicoRepository;
 import com.algaworks.osworks.domain.service.GestaoOrdemServicoService;
@@ -37,7 +38,9 @@ public class OrdemServicoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public OrdemServicoDTO criar(@Valid @RequestBody OrdemServico ordemServico) {
+	public OrdemServicoDTO criar(@Valid @RequestBody OrdemServicoInputDTO ordemServicoInputDTO) {
+		OrdemServico ordemServico = toEntity(ordemServicoInputDTO);
+		
 		return toDTO(service.criar(ordemServico));
 	}
 	
@@ -71,6 +74,10 @@ public class OrdemServicoController {
 				.map(this::toDTO)
 				.collect(Collectors.toList());
 				
+	}
+	
+	private OrdemServico toEntity(OrdemServicoInputDTO ordemServicoInputDTO) {
+		return modelMapper.map(ordemServicoInputDTO, OrdemServico.class);
 	}
 	
 }
