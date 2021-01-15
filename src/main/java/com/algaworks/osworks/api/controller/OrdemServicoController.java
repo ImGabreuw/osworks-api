@@ -50,7 +50,7 @@ public class OrdemServicoController {
 		Optional<OrdemServico> ordemServicoOptional = repository.findById(id);
 		
 		if (ordemServicoOptional.isPresent()) {
-			OrdemServicoDTO dto = modelMapper.map(ordemServicoOptional, OrdemServicoDTO.class);
+			OrdemServicoDTO dto = modelMapper.map(ordemServicoOptional.get(), OrdemServicoDTO.class);
 			
 			return ResponseEntity
 					.ok(dto);
