@@ -2,6 +2,7 @@ package com.algaworks.osworks.api.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -36,13 +37,12 @@ public class OrdemServicoController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public OrdemServico criar(@Valid @RequestBody OrdemServico ordemServico) {
-		return service.criar(ordemServico);
+	public OrdemServicoDTO criar(@Valid @RequestBody OrdemServico ordemServico) {
+		return toDTO(service.criar(ordemServico));
 	}
 	
-	@GetMapping
-	public List<OrdemServico> listar() {
-		return repository.findAll();
+	public List<OrdemServicoDTO> listar() {
+		return toCollectionDTO(repository.findAll());
 	}
 	
 	@GetMapping("/{id}")
@@ -50,7 +50,7 @@ public class OrdemServicoController {
 		Optional<OrdemServico> ordemServicoOptional = repository.findById(id);
 		
 		if (ordemServicoOptional.isPresent()) {
-			OrdemServicoDTO dto = modelMapper.map(ordemServicoOptional.get(), OrdemServicoDTO.class);
+			OrdemServicoDTO dto = toDTO(ordemServicoOptional.get());
 			
 			return ResponseEntity
 					.ok(dto);
@@ -59,6 +59,18 @@ public class OrdemServicoController {
 		return ResponseEntity
 				.notFound()
 				.build();
+	}
+	
+	private OrdemServicoDTO toDTO(OrdemServico ordemServico) {
+		return modelMapper.map(ordemServico, OrdemServicoDTO.class);
+	}
+	
+	private List<OrdemServicoDTO> toCollectionDTO(List<OrdemServico> ordemServicos) {
+		return ordemServicos
+				.stream()
+				.map(this::toDTO)
+				.collect(Collectors.toList());
+				
 	}
 	
 }
