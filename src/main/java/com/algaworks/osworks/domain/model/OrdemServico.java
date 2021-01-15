@@ -2,6 +2,8 @@ package com.algaworks.osworks.domain.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,7 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+import com.algaworks.osworks.api.model.Comentario;
 import com.algaworks.osworks.domain.model.enums.StatusOrdemServico;
 
 @Entity
@@ -31,6 +35,9 @@ public class OrdemServico {
 	
 	private OffsetDateTime dataAbertura;
 	private OffsetDateTime dataFinalizacao;
+	
+	@OneToMany(mappedBy = "ordemServico")
+	private final List<Comentario> comentarios = new ArrayList<>();
 	
 	public OrdemServico() {
 	}
@@ -95,7 +102,10 @@ public class OrdemServico {
 	public void setDataFinalizacao(OffsetDateTime dataFinalizacao) {
 		this.dataFinalizacao = dataFinalizacao;
 	}
-	
+	public List<Comentario> getComentarios() {
+		return comentarios;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
